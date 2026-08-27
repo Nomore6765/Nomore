@@ -1,0 +1,37 @@
+name: Deploy MLB Stats
+
+on:
+  push:
+    branches: [ main ]
+  schedule:
+    - cron: '0 12 * * *'  # каждый день в 12:00 UTC
+  workflow_dispatch:       # можно запустить вручную
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install requests pandas nbconvert jupyter
+
+      - name: Execute notebook and convert to HTML
+        run: |
+          jupyter nbconvert --to html Untitled0.ipynb --output index.html
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./
+          publish_branch: gh-pages
+          keep_files: false
