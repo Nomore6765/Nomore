@@ -5,6 +5,10 @@ on:
     branches: [ main ]
   workflow_dispatch:
 
+# ✅ Добавь этот блок на уровне всего workflow
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
